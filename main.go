@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -36,26 +35,15 @@ func main() {
 
 	log.Printf("Running command: %v\n", cmd.Args)
 
-	var b bytes.Buffer
-	cmd.Stdout = &b
-	cmd.Stderr = &b
-
-	err := cmd.Start()
-	if err != nil {
-		log.Fatalf("Error starting command: %v\n", err)
-	}
-
 	done := make(chan struct{})
-
 	go tick(done)
 
-	err = cmd.Wait()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		close(done)
 		fmt.Println()
-		log.Printf("Error waiting for command: %v\n", err)
-		trimmed := strings.Trim(b.String(), " \n")
-		log.Fatalf("\n" + indented(red(trimmed), 4))
+		trimmed := strings.Trim(string(output), " \n")
+		log.Fatalf("Received the following output (%v):\n%s", err, indented(red(trimmed), 4))
 	}
 
 	close(done)
