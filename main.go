@@ -12,8 +12,8 @@ import (
 const groupNameEnvVar = "AZ_GROUP"
 
 func main() {
-	groupName, ok := os.LookupEnv(groupNameEnvVar)
-	if !ok {
+	groupName := os.Getenv(groupNameEnvVar)
+	if groupName == "" {
 		log.Fatalf("Environment variable %s not set\n", groupNameEnvVar)
 	}
 
