@@ -14,10 +14,10 @@ const groupNameEnvVar = "AZ_GROUP"
 func main() {
 	groupName := os.Getenv(groupNameEnvVar)
 	if groupName == "" {
-		log.Fatalf("Environment variable %s not set\n", groupNameEnvVar)
+		log.Fatalf(redF("[FATAL] Environment variable %s not set", groupNameEnvVar))
 	}
 
-	log.Printf("Resetting Janitor for group %s\n", groupName)
+	log.Printf("[INFO] Resetting Janitor for group %s", groupName)
 
 	ts := time.Now().Format("2006-01-02T15:04:05Z")
 	cmd := exec.Command(
@@ -45,7 +45,7 @@ func main() {
 
 	close(done)
 	fmt.Println()
-	log.Println(green("😊  Finished resetting Janitor!"))
+	log.Println(green("[INFO] 😊  Finished resetting Janitor!"))
 }
 
 func tick(done chan struct{}) {
@@ -66,8 +66,16 @@ func green(s string) string {
 	return fmt.Sprintf("\033[32m%s\033[0m", s)
 }
 
+func greenF(s string, a ...interface{}) string {
+	return green(fmt.Sprintf(s, a...))
+}
+
 func red(s string) string {
 	return fmt.Sprintf("\033[31m%s\033[0m", s)
+}
+
+func redF(s string, a ...interface{}) string {
+	return red(fmt.Sprintf(s, a...))
 }
 
 func indented(s string, n int) string {
