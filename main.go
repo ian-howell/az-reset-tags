@@ -40,7 +40,7 @@ func main() {
 		close(done)
 		fmt.Println()
 		trimmed := strings.Trim(string(output), " \n")
-		log.Fatalf("Received the following output (%v):\n%s", err, indented(red(trimmed), 4))
+		log.Fatalf(redF("[FATAL] Received the following output (%v):\n\n%s\n", err, indented(trimmed, 4)))
 	}
 
 	close(done)
