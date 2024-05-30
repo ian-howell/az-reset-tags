@@ -39,7 +39,6 @@ func main() {
 	var b bytes.Buffer
 	cmd.Stdout = &b
 	cmd.Stderr = &b
-	// return b.Bytes(), err
 
 	err := cmd.Start()
 	if err != nil {
