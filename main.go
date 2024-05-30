@@ -20,7 +20,6 @@ func main() {
 	log.Printf("Resetting Janitor for group %s\n", groupName)
 
 	ts := time.Now().Format("2006-01-02T15:04:05Z")
-	_ = ts
 
 	//"az group update --name %s --tags 'CleanupFrequency=Weekly' 'Created=%s' 'Owner=ianhowell@microsoft.com' --only-show-errors --output none", groupName, ts)
 	cmd := exec.Command(
