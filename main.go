@@ -15,8 +15,7 @@ const groupNameEnvVar = "AZ_GROUP"
 func main() {
 	groupName, ok := os.LookupEnv(groupNameEnvVar)
 	if !ok {
-		fmt.Printf("Environment variable %s not set\n", groupNameEnvVar)
-		os.Exit(1)
+		log.Fatalf("Environment variable %s not set\n", groupNameEnvVar)
 	}
 
 	log.Printf("Resetting Janitor for group %s\n", groupName)
