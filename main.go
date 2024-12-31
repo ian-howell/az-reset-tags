@@ -53,6 +53,11 @@ func run() error {
 	log.Println(green("😊  Finished resetting tags!"))
 	oneWeekFromNow := now.AddDate(0, 0, 7).Format("2006-01-02")
 	log.Println(greenF("📅  Don't forget to run again prior to %s", oneWeekFromNow))
+	log.Println(green("💡  Here's a handy line of cron to just run this command daily at 2PM (local time)"))
+
+	homeDir, _ := os.UserHomeDir()
+	fmt.Println()
+	fmt.Printf("    0 14 * * * %s/notes/scripts/az-group-reset-tags --group %v\n\n", homeDir, groupName)
 	return nil
 }
 
