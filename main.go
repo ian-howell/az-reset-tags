@@ -55,9 +55,11 @@ func run() error {
 	log.Println(greenF("📅  Don't forget to run again prior to %s", oneWeekFromNow))
 	log.Println(green("💡  Here's a handy line of cron to just run this command daily at 2PM (local time)"))
 
-	homeDir, _ := os.UserHomeDir()
-	fmt.Println()
-	fmt.Printf("    0 14 * * * %s/notes/scripts/az-group-reset-tags --group %v\n\n", homeDir, groupName)
+	executable, err := os.Executable()
+	if err != nil {
+		return fmt.Errorf("failed to get executable path: %w", err)
+	}
+	fmt.Printf("    0 14 * * * %s --group %v\n\n", executable, groupName)
 	return nil
 }
 
