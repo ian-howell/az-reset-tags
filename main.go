@@ -59,7 +59,7 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("failed to get executable path: %w", err)
 	}
-	fmt.Printf("    0 14 * * * %s --group %v\n\n", executable, groupName)
+	fmt.Printf("    0 14 * * * %s -group %v\n\n", executable, groupName)
 	return nil
 }
 
