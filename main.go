@@ -6,20 +6,25 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
-)
 
-const groupNameEnvVar = "AZ_GROUP"
+	"gopkg.in/yaml.v2"
+)
 
 var (
-	helpFlag  bool
-	groupFlag string
+	helpFlag         bool
+	groupFlag        string
+	subscriptionFlag string
 )
+
+const subscription = "Edge_AzureLocal_EphemeralEngineeringDevEnvironments"
 
 func initFlags() {
 	flag.BoolVar(&helpFlag, "help", false, "Show help")
 	flag.StringVar(&groupFlag, "group", "", "Azure resource group name")
+	flag.StringVar(&subscriptionFlag, "subscription", "", "Azure subscription name")
 	flag.Parse()
 }
 
@@ -67,6 +72,7 @@ func resetTags(groupName, timestamp string) error {
 	cmd := exec.Command(
 		"az", "group", "update",
 		"--name", groupName,
+		"--subscription", subscription,
 		"--tags",
 		"CleanupFrequency=Weekly",
 		"Created="+timestamp,
@@ -94,10 +100,29 @@ func resetTags(groupName, timestamp string) error {
 }
 
 func getGroupName() string {
+	// The flag gets the highest priority
 	if groupFlag != "" {
 		return groupFlag
 	}
-	return os.Getenv(groupNameEnvVar)
+
+	// Next highest priority is the environment variable
+	const groupEnvVar = "DB_AZ_RESOURCE_GROUP"
+	if groupName := os.Getenv(groupEnvVar); groupName != "" {
+		return groupName
+	}
+
+	// Otherwise, we read the config file
+	config := Config{}
+	configPath := filepath.Join(os.Getenv("HOME"), ".config", "nc-devbox", "config.yaml")
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		log.Fatalf("failed to read config file: %v", err)
+	}
+	if err := yaml.Unmarshal(data, &config); err != nil {
+		log.Fatalf("failed to unmarshal config file: %v", err)
+	}
+
+	return config.Azure.ResourceGroup
 }
 
 func tick(done chan struct{}) {
